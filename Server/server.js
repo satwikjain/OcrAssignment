@@ -1,35 +1,40 @@
-import express from "express";
-import mongoose from "mongoose";
-import colors from "colors";
-import dotenv from "dotenv";
-import morgan from "morgan";
-import cors from "cors";
-import apiRoutes from "./Routes/apiRoutes.js";
+// server.js
+const express = require('express');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+
+const cors = require('cors');
+
 
 dotenv.config();
-const DB=process.env.MONGO_URL;
-mongoose.connect(DB,{
-    useNewUrlParser:true,
-    useUnifiedTopology:true,
-    family:4
-}).then(()=>{
-    console.log("connected");
-}).catch((err)=>console.log(`${err} Error connecting`));
 
-const app=express();
+const app = express();
+const port = process.env.PORT || 5000;
+
+// MongoDB connection
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log('MongoDB Connected'))
+    .catch(err => console.log(err));
+
+//app.use(express.json());
+
+app.use(express.json({ limit: '10mb' }));
+
+// deployment config
+const path = require("path");
+__dirname = path.resolve();
+
+if (process.env.NODE_ENV === "production") {
+    app.use(express.static(path.join(__dirname, "/client/build")));
+    app.get("*", (req, res) => {
+        res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+    });
+}
 
 app.use(cors());
-app.use(express.json());
-app.use(morgan('dev'));
 
-app.use('/api',apiRoutes);
 
-app.get("/",(req,res)=>{
-    res.send("<h1>Welcome To DreamWed- Connect</h1>")
-});
+// Routes
+app.use('/api/ocr', require('./routes/ocr'));
 
-const PORT=process.env.PORT || 8080;
-
-app.listen(PORT,()=>{
-    console.log(`Server running at ${PORT}`.bgCyan.white);
-})
+app.listen(port, () => console.log(`Server running on port ${port}`));

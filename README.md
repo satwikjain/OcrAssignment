@@ -1,49 +1,54 @@
-# OCR Application
+ # Thai ID OCR App
 
-This project is an Optical Character Recognition (OCR) application that analyzes Thai ID cards and extracts relevant data. It integrates with the Google Vision API for OCR processing and uses a MongoDB database to store the results. The application is divided into two parts: the client (front end) and the server (back end).
+This React application uses Tesseract.js for OCR (Optical Character Recognition) of Thai ID cards. It allows users to upload an image of a Thai ID card, extract the relevant information, and save it to a database. The app also includes a filter feature to search for specific OCR records.
 
-## Getting Started
 
-### Prerequisites
 
-Before running the application, ensure you have the following prerequisites installed:
+## Prerequisites
 
-- Node.js
-- MongoDB (for local development)
-- Google Cloud SDK (for API integration)
+- Node.js and npm
+- Tesseract.js (version 5 or higher) (Earlier I wanted to use Google Vision API but it is paid means we have to pay i.e prepayment option)
+- ImageJS (version 2 or higher)
+- A backend server with a REST API to handle OCR data (e.g., Express.js)
 
-### Database Configuration
+## Setup
 
-1. Connect to a local MongoDB server.
-2. Update the MongoDB URI in the server's `.env` file.
+1. Clone the repository.
+2. Go to the Server folder and install the dependencies:
+```
+cd server
+npm install
+```
+3. Run the React app:
+```
+cd client
+npm start
+```
 
-### Google Cloud API Integration
+## How to Use
 
-1. Install the Google Cloud SDK on your local machine.
-2. Obtain a service account key for the Google Vision API.
-3. Paste the key in the server's `.env` file.
+1. Drag and drop an image of a Thai ID card onto the dropzone, or click to select one.
+2. The app will automatically process the image and extract the relevant information.
+3. The extracted fields will be displayed in the "Extracted Fields" section.
+4. You can edit the extracted fields if needed.
+5. Click the "Save" button to save the extracted data to the database.
+6. You can also filter the OCR history by name or identification number.
 
-## Running the Frontend
 
-1. Navigate to the `client` folder: `cd client`.
-2. Install dependencies: `npm install`.
-3. Start the frontend: `npm start`.
+### Added Functionality 
 
-## Running the Backend
+Also added remove filters functionality but when I recorded the video it was not there, I added it afterward.
+Here is the image of application.
 
-1. Navigate to the `server` folder: `cd server`.
-2. Install dependencies: `npm install`.
-3. Run the server: `nodemon .\server.js`.
 
-## Contributing
+### Issue
 
-If you'd like to contribute to the project, please follow our [contribution guidelines](CONTRIBUTING.md).
+There is a small issue, when we use search with filters functionality in the application, it does not work properly but this issue is on the deployed version only. When we are running it locally, the search functionality is working properly. The issue is with the production code of react-dom on render website (on which I have deployed my application). In the demo video, I am running the application locally and in this search functionality is working fine. 
 
-## License
+So this issue is: 
+```
 
-This project is licensed under the [MIT License](LICENSE).
-
-## Acknowledgments
-
-- Thanks to [Google Cloud](https://cloud.google.com/) for providing the Vision API.
-- Inspired by the need for efficient OCR in real-world applications.
+TypeError: s.map is not a function
+    at Hp (App.js:313:25)
+    at So (react-dom.production.min.js:167:137)
+```
